@@ -13,6 +13,7 @@ import httplib, urllib, sys
 import css_html_js_minify.html_minifier as html_minifier
 
 # Install pre-requisites
+# you need root on linux
 java_installed = (0 == system("java -version"))
 if java_installed:
     import pip
@@ -197,9 +198,6 @@ def process_html_app(source, dest, env):
         for out_file in man:
             in_files = man[out_file]
             out_files.append(out_file)
-            print("in_files {}".format(in_files))
-            print("out_files {}".format(out_files))
-            print("out_file {}".format(out_file))
             process_app_file(source, in_files, dest, out_file, env)
     for file in listdir(dest):
         if isfile(join(dest, file)) and not file in out_files:
