@@ -1,10 +1,5 @@
-#if defined(ENABLE_DEBUG) && !defined(ENABLE_DEBUG_WEB)
-#undef ENABLE_DEBUG
-#endif
-
 #include <Arduino.h>
 
-//#include "web_server.h"
 #include "web_server_static.h"
 
 // Static files
@@ -16,13 +11,7 @@
 
 // Pages
 static const char _INDEX_PAGE[] PROGMEM = "/index.htm";
-#define HOME_PAGE FPSTR(_HOME_PAGE)
-
-static const char _HOME_PAGE[] PROGMEM = "/home.htm";
-#define HOME_PAGE FPSTR(_HOME_PAGE)
-
-static const char _WIFI_PAGE[] PROGMEM = "/wifi_portal.htm";
-#define WIFI_PAGE FPSTR(_WIFI_PAGE)
+#define INDEX_PAGE FPSTR(_INDEX_PAGE)
 
 StaticFileWebHandler::StaticFileWebHandler()
 {
@@ -30,10 +19,11 @@ StaticFileWebHandler::StaticFileWebHandler()
 
 bool StaticFileWebHandler::_getFile(AsyncWebServerRequest *request, StaticFile **file)
 {
-  // Remove the found uri
   String path = request->url();
   if(path == "/") {
-    path = _INDEX_PAGE;
+    path = INDEX_PAGE;
+  } else {
+    path.replace("/auth", "");
   }
 
   for(int i = 0; i < ARRAY_LENGTH(staticFiles); i++) {
@@ -45,7 +35,6 @@ bool StaticFileWebHandler::_getFile(AsyncWebServerRequest *request, StaticFile *
       return true;
     }
   }
-
   return false;
 }
 
@@ -64,6 +53,7 @@ bool StaticFileWebHandler::canHandle(AsyncWebServerRequest *request)
 
 void StaticFileWebHandler::handleRequest(AsyncWebServerRequest *request)
 {
+/*  
   // Are we authenticated
   if(_username != "" && _password != "" &&
      false == request->authenticate(_username.c_str(), _password.c_str()))
@@ -71,7 +61,7 @@ void StaticFileWebHandler::handleRequest(AsyncWebServerRequest *request)
     request->requestAuthentication();
     return;
   }
-
+*/
   // Get the filename from request->_tempObject and free it
   StaticFile *file = (StaticFile *)request->_tempObject;
   if (file)
@@ -158,46 +148,6 @@ size_t StaticFileResponse::writeData(AsyncWebServerRequest *request)
       length -= written;
     }
 
-/*
-    bool aligned = RESPONSE_CONTENT == _state;
-    if(aligned && (!IS_ALIGNED(ptr) || length < 32))
-    {
-      char buffer[32];
-      uint32_t copy = sizeof(buffer) - ((uint32_t)ptr & 0x00000003); // byte aligned mask
-      if(copy > length) {
-        copy = length;
-      }
-      DBUGF("None aligned write %d@%p", copy, ptr);
-      memcpy_P(buffer, ptr, copy);
-
-      written = request->client()->write(buffer, copy);
-      if(written > 0) {
-        _writtenLength += written;
-        ptr += written;
-        length -= written;
-      } else {
-        DBUGF("Failed to write data");
-      }
-    }
-
-    if(!aligned || IS_ALIGNED(ptr))
-    {
-      size_t outLen = length;
-      if(outLen > space) {
-        outLen = space;
-      }
-      DBUGF("Aligned write %d@%p", outLen, ptr);
-      written = request->client()->write(ptr, outLen);
-      if(written > 0) {
-        _writtenLength += written;
-        ptr += written;
-        length -= written;
-      } else {
-        DBUGF("Failed to write data");
-      }
-    }
-*/
-
     if(0 == length)
     {
       switch(_state)
@@ -212,7 +162,6 @@ size_t StaticFileResponse::writeData(AsyncWebServerRequest *request)
           break;
       }
     }
-
     return written;
   }
 

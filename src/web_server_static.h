@@ -1,5 +1,5 @@
-#ifndef _EMONESP_WEB_SERVER_STATIC_H
-#define _EMONESP_WEB_SERVER_STATIC_H
+#ifndef _ESP_RFID_WEB_SERVER_STATIC_H
+#define _ESP_RFID_WEB_SERVER_STATIC_H
 
 #include <Hash.h>
 #include <ESPAsyncTCP.h>
@@ -52,4 +52,4 @@ class StaticFileResponse: public AsyncWebServerResponse
 
 };
 
-#endif // _EMONESP_WEB_SERVER_STATIC_H
+#endif // _ESP_RFID_WEB_SERVER_STATIC_H

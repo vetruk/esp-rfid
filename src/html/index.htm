@@ -12,9 +12,9 @@
       <link href="/required.css" rel="stylesheet">
       <script>
          function login() {
-           var username = "admin"
+           var username = "admin";
            var password = document.getElementById("password").value;
-           var url = "/auth";
+           var url = "/auth/users.htm";
            var xhr = new XMLHttpRequest();
            xhr.open("get", url, true, username, password);
            xhr.onload = function(e) {

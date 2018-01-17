@@ -38,7 +38,6 @@
 #include <FS.h>                       // SPIFFS Library for storing web files to serve to web browsers
 #include <ESPAsyncTCP.h>              // Async TCP Library is mandatory for Async Web Server
 #include <ESPAsyncWebServer.h>        // Async Web Server with built-in WebSocket Plug-in
-#include <SPIFFSEditor.h>             // This creates a web page on server which can be used to edit text based files.
 #include <NtpClientLib.h>             // To timestamp RFID scans we get Unix Time from NTP Server
 #include <TimeLib.h>                  // Library for converting epochtime to a date
 #include <WiFiUdp.h>                  // Library for manipulating UDP packets which is used by NTP Client to get Timestamps
@@ -753,10 +752,8 @@ bool loadConfiguration() {
   const char * adminpass = json["adminpwd"];
 
   // Serve confidential files in /auth/ folder with a Basic HTTP authentication
-  server.serveStatic("/auth/", SPIFFS, "/auth/").setDefaultFile("users.htm").setAuthentication("admin", adminpass);
-  ws.setAuthentication("admin", adminpass);
-  // Add Text Editor (http://esp-rfid.local/edit) to Web Server. This feature likely will be dropped on final release.
-  server.addHandler(new SPIFFSEditor("admin", adminpass));
+  //server.serveStatic("/auth/", SPIFFS, "/auth/").setDefaultFile("users.htm").setAuthentication("admin", adminpass);
+  //ws.setAuthentication("admin", adminpass);
 
   if (wmode == 1) {
     Serial.println(F("[ INFO ] ESP-RFID is running in AP Mode "));

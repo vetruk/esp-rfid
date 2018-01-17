@@ -5,3 +5,7 @@ src/data/*.js
 src/data/*.css
 src/web_server.*.*.h
 src/web_server_static_files.h
+
+# Python code
+*.pyc
+.cache
