@@ -1,4 +1,7 @@
 .pioenvs
 .piolibdeps
-data/*.gz
-data/auth/config.json
+src/data/*.htm
+src/data/*.js
+src/data/*.css
+src/web_server.*.*.h
+src/web_server_static_files.h

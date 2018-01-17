@@ -1,0 +1,11 @@
+{
+  "index.htm": [ "index.htm" ],
+  "required.js": ["required.js"],
+  "log.htm": [ "auth/log.htm" ],
+  "settings.htm": [ "auth/settings.htm" ],
+  "users.htm": [ "auth/users.htm" ],
+  "log.js": ["auth/log.js"],
+  "settings.js": ["auth/settings.js"],
+  "users.js": ["auth/users.js"],
+  "required.css": [ "required.css" ]
+}

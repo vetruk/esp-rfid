@@ -42,7 +42,7 @@
 #include <NtpClientLib.h>             // To timestamp RFID scans we get Unix Time from NTP Server
 #include <TimeLib.h>                  // Library for converting epochtime to a date
 #include <WiFiUdp.h>                  // Library for manipulating UDP packets which is used by NTP Client to get Timestamps
-
+#include "web_server_static.h"
 // Variables for whole scope
 unsigned long previousMillis = 0;
 unsigned long previousLoopMillis = 0;
@@ -74,7 +74,7 @@ MFRC522 mfrc522 = MFRC522();
 AsyncWebServer server(80);
 // Create WebSocket instance on URL "/ws"
 AsyncWebSocket ws("/ws");
-
+StaticFileWebHandler staticFile;
 // Set things up
 void setup() {
   Serial.begin(115200);
@@ -83,14 +83,6 @@ void setup() {
 
   // Start SPIFFS filesystem
   SPIFFS.begin();
-
-  /* Remove Users Helper
-    Dir dir = SPIFFS.openDir("/P/");
-    while (dir.next()){
-    SPIFFS.remove(dir.fileName());
-    }
-  */
-
   // Try to load configuration file so we can connect to an Wi-Fi Access Point
   // Do not worry if no config file is present, we fall back to Access Point mode and device can be easily configured
   if (!loadConfiguration()) {
@@ -104,7 +96,7 @@ void startServer() {
   server.addHandler(&ws);
   ws.onEvent(onWsEvent);
   // Serve all files in root folder
-  server.serveStatic("/", SPIFFS, "/");
+  server.addHandler(&staticFile);
   // Handle what happens when requested web file couldn't be found
   server.onNotFound([](AsyncWebServerRequest * request) {
     AsyncWebServerResponse *response = request->beginResponse(404, "text/plain", "Not found");
