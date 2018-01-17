@@ -53,7 +53,6 @@ bool StaticFileWebHandler::canHandle(AsyncWebServerRequest *request)
 
 void StaticFileWebHandler::handleRequest(AsyncWebServerRequest *request)
 {
-/*  
   // Are we authenticated
   if(_username != "" && _password != "" &&
      false == request->authenticate(_username.c_str(), _password.c_str()))
@@ -61,7 +60,6 @@ void StaticFileWebHandler::handleRequest(AsyncWebServerRequest *request)
     request->requestAuthentication();
     return;
   }
-*/
   // Get the filename from request->_tempObject and free it
   StaticFile *file = (StaticFile *)request->_tempObject;
   if (file)

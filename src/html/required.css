@@ -349,8 +349,8 @@ body {
 
 @font-face {
     font-family: 'Glyphicons Halflings';
-    src: url(../fonts/glyph.eot);
-    src: url(../fonts/glyph.eot?#iefix) format('embedded-opentype'), url(../fonts/glyph.woff2) format('woff2'), url(../fonts/glyph.woff) format('woff'), url(../fonts/glyph.ttf) format('truetype'), url(../fonts/glyph.svg#glyphicons_halflingsregular) format('svg')
+    src: url(/glyph.eot);
+    src: url(/glyph.eot?#iefix) format('embedded-opentype'), url(/glyph.woff2) format('woff2'), url(/glyph.woff) format('woff'), url(/glyph.ttf) format('truetype'), url(/glyph.svg#glyphicons_halflingsregular) format('svg')
 }
 
 .glyphicon {

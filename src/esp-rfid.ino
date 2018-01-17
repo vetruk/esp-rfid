@@ -658,7 +658,6 @@ void fallbacktoAPMode() {
   char ssid[15];
   sprintf(ssid, "ESP-RFID-%02x%02x%02x", macAddr[3], macAddr[4], macAddr[5]);
   isWifiConnected = startAP(ssid);
-  server.serveStatic("/auth/", SPIFFS, "/auth/").setDefaultFile("users.htm").setAuthentication("admin", "admin");
 }
 
 void parseBytes(const char* str, char sep, byte* bytes, int maxBytes, int base) {
@@ -750,10 +749,6 @@ bool loadConfiguration() {
   int wmode = json["wmode"];
 
   const char * adminpass = json["adminpwd"];
-
-  // Serve confidential files in /auth/ folder with a Basic HTTP authentication
-  //server.serveStatic("/auth/", SPIFFS, "/auth/").setDefaultFile("users.htm").setAuthentication("admin", adminpass);
-  //ws.setAuthentication("admin", adminpass);
 
   if (wmode == 1) {
     Serial.println(F("[ INFO ] ESP-RFID is running in AP Mode "));

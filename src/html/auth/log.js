@@ -74,7 +74,6 @@ function socketMessageListener(evt) {
 }
 
 function socketCloseListener(evt) {
-    console.log('socket closed');
     websock = new WebSocket(wsUri);
     websock.addEventListener('message', socketMessageListener);
     websock.addEventListener('close', socketCloseListener);
