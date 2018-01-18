@@ -17,6 +17,7 @@ const char _CONTENT_TYPE_EOT[] PROGMEM = "application/vnd.ms-fontobject";
 const char _CONTENT_TYPE_TTF[] PROGMEM = "application/x-font-truetype";
 const char _CONTENT_TYPE_WOFF[] PROGMEM = "application/font-woff";
 const char _CONTENT_TYPE_WOFF2[] PROGMEM = "application/font-woff2";
+const char _CONTENT_TYPE_GZIP[] PROGMEM = "application/gzip";
 
 struct StaticFile
 {

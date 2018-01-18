@@ -9,6 +9,7 @@ from pprint import pprint
 import re
 import requests
 import httplib, urllib, sys
+import glob
 
 import css_html_js_minify.html_minifier as html_minifier
 
@@ -28,7 +29,7 @@ def html_minify(file, comments=False):
 def js_minify(file_name):
     if java_installed:
         from subprocess import Popen, PIPE
-        p = Popen(['closure', '--js', file_name, '--compilation_level', 'SIMPLE'],
+        p = Popen(['closure', '--warning_level', 'QUIET', '--js', file_name, '--compilation_level', 'SIMPLE'],
                   stdout=PIPE, stderr=PIPE)
         (closure_stdout, closure_stderr) = p.communicate()
         if closure_stderr:
@@ -85,7 +86,7 @@ def minify(env, target, source):
         elif abs_file.endswith(".htm") or abs_file.endswith(".html"):
             output += html_minify(abs_file, comments=False)
     target_file = target[0].get_abspath()
-    print("Generating {}".format(target_file))
+    print("(minify)Generating {}".format(target_file))
     with open(target_file, "w") as output_file:
         output_file.write(output.encode('utf-8'))
 
@@ -124,14 +125,14 @@ def binary_to_header(source_file):
 def data_to_header(env, target, source):
     output = ""
     for source_file in source:
-        #print("Reading {}".format(source_file))
+        print("(data_to_header)Reading {}".format(source_file))
+        target_file = target[0].get_abspath()
         file = source_file.get_abspath()
         if file.endswith(".css") or file.endswith(".js") or file.endswith(".htm") or file.endswith(".html"):
             output += text_to_header(file)
         else:
             output += binary_to_header(file)
-    target_file = target[0].get_abspath()
-    print("Generating {}".format(target_file))
+    print("(data_to_header)Generating {}".format(target_file))
     with open(target_file, "w") as output_file:
         output_file.write(output.encode('utf-8'))
 
@@ -179,6 +180,10 @@ def make_static(env, target, source):
             filetype = "WOFF"
         elif out_file.endswith(".woff2"):
             filetype = "WOFF2"
+        elif out_file.endswith("css.gz"):
+            filetype = "CSS"
+        elif out_file.endswith("js.gz"):
+            filetype = "JS"
 
         c_name = get_c_name(out_file)
         output += "  { \"/"+out_file+"\", CONTENT_"+c_name+", sizeof(CONTENT_"+c_name+") - 1, _CONTENT_TYPE_"+filetype+" },\n"
@@ -186,7 +191,7 @@ def make_static(env, target, source):
     output += "};\n"
 
     target_file = target[0].get_abspath()
-    print("Generating {}".format(target_file))
+    print("(make_static)Generating {}".format(target_file))
     with open(target_file, "w") as output_file:
         output_file.write(output.encode('utf-8'))
 
@@ -223,10 +228,16 @@ def copy_firmware(source, target, env):
 	shutil.copy(firmware_source, 'compiledbin/latest.bin')
 
 
+def do_gzip(srcfile, destdir):
+    out_file = join(destdir, basename(srcfile))
+    out_file += ".gz"
+    with open(srcfile, 'rb') as f_in:
+        with gzip.open(out_file, 'wb') as f_out:
+            shutil.copyfileobj(f_in, f_out)
+
 def purge(dir, pattern):
-    for f in os.listdir(dir):
-        if re.search(pattern, f):
-            os.remove(os.path.join(dir, f))
+    for fl in glob.glob(join(dir, pattern)):
+        os.remove(fl)
 
 env.AddPostAction("buildprog", copy_firmware)
 
@@ -234,9 +245,15 @@ firmware_source = os.path.join(env.subst("$BUILD_DIR"), "firmware.bin")
 #
 # Generate Web app resources
 #
-purge(env.subst("$PROJECTSRC_DIR"), "web_server*")
 html_src = join(env.subst("$PROJECTSRC_DIR"), "html")
 data_src = join(env.subst("$PROJECTSRC_DIR"), "data")
+#purge(data_src, "*.gz")
+purge(data_src, "*.js")
+purge(data_src, "*.css")
+purge(data_src, "*.htm")
+#do_gzip(join(html_src, "required.js"), data_src)
+#do_gzip(join(html_src, "required.css"), data_src)
+purge(env.subst("$PROJECTSRC_DIR"), "web_server*")
 process_html_app(html_src, data_src, env)
 
 
