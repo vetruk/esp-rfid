@@ -357,6 +357,7 @@ void LogLatest(String uid, String username) {
     DynamicJsonBuffer jsonBuffer3;
     JsonObject& root = jsonBuffer3.createObject();
     root["type"] = "latestlog";
+    root["result"] = true;
     JsonArray& list = root.createNestedArray("list");
     root.printTo(logFile);
     logFile.close();
@@ -431,7 +432,7 @@ void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventT
           ESP.reset();
         }
       }
-      else if (strcmp(command, "userlist")  == 0) {
+      else if (strcmp(command, "userlist") == 0) {
         int page = root["page"];
         sendUserList(page, client);
       }
@@ -464,6 +465,9 @@ void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventT
             ws.textAll(buffer);
           }
           logFile.close();
+        } else {
+          // no log
+          ws.textAll("{\"type\":\"latestlog\",\"result\": false}");
         }
       }
       else if (strcmp(command, "scan")  == 0) {
@@ -579,6 +583,7 @@ void sendStatus() {
   root["chipid"] = String(ESP.getChipId(), HEX);
   root["cpu"] = ESP.getCpuFreqMHz();
   root["availsize"] = ESP.getFreeSketchSpace();
+  root["fullsize"] = ESP.getFlashChipRealSize();  
   root["availspiffs"] = fsinfo.totalBytes - fsinfo.usedBytes;
   root["spiffssize"] = fsinfo.totalBytes;
   root["uptime"] = NTP.getUptimeString();
@@ -761,7 +766,7 @@ bool loadConfiguration() {
   const char * adminpass = json["adminpwd"];
 
   // Serve confidential files in /auth/ folder with a Basic HTTP authentication
-  server.serveStatic("/auth/", SPIFFS, "/auth/").setDefaultFile("users.htm").setAuthentication("admin", adminpass);
+  server.serveStatic("/auth/", SPIFFS, "/auth/").setDefaultFile("esprfid.htm").setAuthentication("admin", adminpass);
   ws.setAuthentication("admin", adminpass);
   // Add Text Editor (http://esp-rfid.local/edit) to Web Server. This feature likely will be dropped on final release.
   server.addHandler(new SPIFFSEditor("admin", adminpass));
