@@ -41,7 +41,7 @@
 #include <NtpClientLib.h>             // To timestamp RFID scans we get Unix Time from NTP Server
 #include <TimeLib.h>                  // Library for converting epochtime to a date
 #include <WiFiUdp.h>                  // Library for manipulating UDP packets which is used by NTP Client to get Timestamps
-#include "web_server_static.h"
+#include "static_server.h"
 // Variables for whole scope
 unsigned long previousMillis = 0;
 unsigned long previousLoopMillis = 0;
@@ -570,6 +570,7 @@ void sendStatus() {
   root["chipid"] = String(ESP.getChipId(), HEX);
   root["cpu"] = ESP.getCpuFreqMHz();
   root["availsize"] = ESP.getFreeSketchSpace();
+  root["fullsize"] = ESP.getFlashChipRealSize();
   root["availspiffs"] = fsinfo.totalBytes - fsinfo.usedBytes;
   root["spiffssize"] = fsinfo.totalBytes;
   root["uptime"] = NTP.getUptimeString();
@@ -707,9 +708,9 @@ bool loadConfiguration() {
     if (json.containsKey("sspin")) {
       rfidss = json["sspin"];
     }
-     int rfidgain = json["rfidgain"];
-     Serial.println(F("[ INFO ] Trying to setup RFID MFRC533 Hardware"));
-     setupMFRC533Reader(rfidss, rfidgain);
+    int rfidgain = json["rfidgain"];
+    Serial.println(F("[ INFO ] Trying to setup RFID MFRC533 Hardware"));
+    setupMFRC533Reader(rfidss, rfidgain);
   }
 
   const char * l_hostname = json["hostnm"];

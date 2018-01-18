@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-#include "web_server_static.h"
+#include "static_server.h"
 
 // Static files
 #include "web_server_static_files.h"

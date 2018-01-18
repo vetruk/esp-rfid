@@ -169,6 +169,16 @@ def make_static(env, target, source):
             filetype = "JPEG"
         elif out_file.endswith(".png"):
             filetype = "PNG"
+        elif out_file.endswith(".svg"):
+            filetype = "SVG"
+        elif out_file.endswith(".eot"):
+            filetype = "EOT"
+        elif out_file.endswith(".ttf"):
+            filetype = "TTF"
+        elif out_file.endswith(".woff"):
+            filetype = "WOFF"
+        elif out_file.endswith(".woff2"):
+            filetype = "WOFF2"
 
         c_name = get_c_name(out_file)
         output += "  { \"/"+out_file+"\", CONTENT_"+c_name+", sizeof(CONTENT_"+c_name+") - 1, _CONTENT_TYPE_"+filetype+" },\n"
@@ -212,12 +222,19 @@ def process_html_app(source, dest, env):
 def copy_firmware(source, target, env):
 	shutil.copy(firmware_source, 'compiledbin/latest.bin')
 
+
+def purge(dir, pattern):
+    for f in os.listdir(dir):
+        if re.search(pattern, f):
+            os.remove(os.path.join(dir, f))
+
 env.AddPostAction("buildprog", copy_firmware)
 
 firmware_source = os.path.join(env.subst("$BUILD_DIR"), "firmware.bin")
 #
 # Generate Web app resources
 #
+purge(env.subst("$PROJECTSRC_DIR"), "web_server*")
 html_src = join(env.subst("$PROJECTSRC_DIR"), "html")
 data_src = join(env.subst("$PROJECTSRC_DIR"), "data")
 process_html_app(html_src, data_src, env)

@@ -296,7 +296,7 @@ function listStats(obj) {
   document.getElementById("heap").style.width = (obj.heap * 100) / 81920 + "%";
   colorStatusbar(document.getElementById("heap"));
   document.getElementById("flash").innerHTML = obj.availsize + " Bytes";
-  document.getElementById("flash").style.width = (obj.availsize * 100) / 1044464 + "%";
+  document.getElementById("flash").style.width = (obj.availsize * 100) / (obj.fullsize - obj.availspiffs) + "%";
   colorStatusbar(document.getElementById("flash"));
   document.getElementById("spiffs").innerHTML = obj.availspiffs + " Bytes";
   document.getElementById("spiffs").style.width = (obj.availspiffs * 100) / obj.spiffssize + "%";

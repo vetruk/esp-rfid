@@ -1,5 +1,5 @@
-#ifndef _ESP_RFID_WEB_SERVER_STATIC_H
-#define _ESP_RFID_WEB_SERVER_STATIC_H
+#ifndef _ESP_RFID_STATIC_SERVER_H_
+#define _ESP_RFID_STATIC_SERVER_H_
 
 #include <Hash.h>
 #include <ESPAsyncTCP.h>
@@ -12,6 +12,11 @@ const char _CONTENT_TYPE_JSON[] PROGMEM = "application/json";
 const char _CONTENT_TYPE_JS[] PROGMEM = "application/javascript";
 const char _CONTENT_TYPE_JPEG[] PROGMEM = "image/jpeg";
 const char _CONTENT_TYPE_PNG[] PROGMEM = "image/png";
+const char _CONTENT_TYPE_SVG[] PROGMEM = "image/svg+xml";
+const char _CONTENT_TYPE_EOT[] PROGMEM = "application/vnd.ms-fontobject";
+const char _CONTENT_TYPE_TTF[] PROGMEM = "application/x-font-truetype";
+const char _CONTENT_TYPE_WOFF[] PROGMEM = "application/font-woff";
+const char _CONTENT_TYPE_WOFF2[] PROGMEM = "application/font-woff2";
 
 struct StaticFile
 {
@@ -52,4 +57,4 @@ class StaticFileResponse: public AsyncWebServerResponse
 
 };
 
-#endif // _ESP_RFID_WEB_SERVER_STATIC_H
+#endif // _ESP_RFID_STATIC_SERVER_H_
