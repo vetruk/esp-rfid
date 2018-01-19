@@ -4,8 +4,9 @@ var recordstorestore = 0;
 var slot = 0;
 var userdata = [];
 var completed = false;
-
+var activePage = 2; // 1: logs 2: users 3 :settings
 function showSettings() {
+  activePage = 3;
 	document.getElementById('settingsPanel').style.display = 'block';
 	document.getElementById('usersPanel').style.display = 'none';
 	document.getElementById('logsPanel').style.display = 'none';
@@ -15,6 +16,7 @@ function showSettings() {
 }
 
 function showUsers() {
+  activePage = 2;
 	document.getElementById('usersPanel').style.display = 'block';
 	document.getElementById('settingsPanel').style.display = 'none';
 	document.getElementById('logsPanel').style.display = 'none';
@@ -24,6 +26,7 @@ function showUsers() {
 }
 
 function showLogs() {
+  activePage = 1;
 	document.getElementById('logsPanel').style.display = 'block';
 	document.getElementById('usersPanel').style.display = 'none';
 	document.getElementById('settingsPanel').style.display = 'none';
@@ -59,54 +62,85 @@ function socketMessageListener(evt) {
 	} else if (obj.command === "configfile") {
 		document.getElementById("settings-loading-img").style.display = "none";
 		document.getElementById("settingsFieldset").disabled = false;
+    document.getElementById('navSettings').disabled = false;
+    timezone = obj.timezone;
 		listCONF(obj);
-		websock.send("{\"command\":\"userlist\", \"page\":" + page + "}");
+		websock.send("{\"command\":\"latestlog\"}");
 	} else if (obj.command === "gettime") {
 		utcSeconds = obj.epoch;
 	} else if (obj.command === "userlist") {
-		document.getElementById("users-loading-img").style.display = "none";
-		document.getElementById("usersFieldset").disabled = false;
-		settings_haspages = obj.haspages;
-		settings_builduserdata(obj);
-    if (settings_haspages === 0) {
-      document.getElementById("users-loading-img").style.display = "none";
-      initUsersTable();
-      $(".footable-show").click();
-      $(".fooicon-remove").click();
-    }
-		websock.send("{\"command\":\"latestlog\"}");
+	  if (activePage == 3) {
+  		document.getElementById("settings-loading-img").style.display = "none";
+  		settings_haspages = obj.haspages;
+  		settings_builduserdata(obj);
+      if (settings_haspages === 0) {
+        document.getElementById("users-loading-img").style.display = "none";
+        initUsersTable();
+        $(".footable-show").click();
+        $(".fooicon-remove").click();
+      }
+	  }
+	  if (activePage == 2) {
+  		document.getElementById("users-loading-img").style.display = "none";
+  		document.getElementById("usersFieldset").disabled = false;
+  		haspages = obj.haspages;
+  		builduserdata(obj);
+      if (haspages === 0) {
+        document.getElementById("users-loading-img").style.display = "none";
+        initUsersTable();
+        $(".footable-show").click();
+        $(".fooicon-remove").click();
+      }
+  		websock.send("{\"command\":\"getconf\"}");
+	  }
 	} else if (obj.type === "latestlog") {
 		document.getElementById("logs-loading-img").style.display = "none";
 		document.getElementById("logsFieldset").disabled = false;
+	  document.getElementById('navLogs').disabled = false;
 		if (obj.result == true) {
 		  logdata = obj.list;
 		}
-	  initLogsTable();
+		if (logRefresh == false) {
+  	  initLogsTable();
+		}
+		logRefresh = false;
     $(".footable-show").click();
 		websock.send("{\"command\":\"gettime\"}");
 	} else if (obj.command === "status") {
 		listStats(obj);
 	} else if (obj.command === "result") {
 		if (obj.resultof === "userfile") {
-			if (!completed && obj.result === true) {
-				restore1by1(slot, recordstorestore, userdata);
-			}
+		  if (activePage == 3) {
+  			if (!completed && obj.result === true) {
+  				restore1by1(slot, recordstorestore, userdata);
+  			}
+		  }
 		} else if (obj.resultof === "userlist") {
-			if (page < settings_haspages && obj.result === true) {
-				settings_getnextpage(page);
-			} else if (page === settings_haspages) {
-				file.type = "esp-rfid-userbackup";
-				file.version = "v0.4";
-				file.list = userdata;
-				piccBackup(file);
-			}
+		  if (activePage == 3) {
+  			if (page < settings_haspages && obj.result === true) {
+  				settings_getnextpage(page);
+  			} else if (page === settings_haspages) {
+  				file.type = "esp-rfid-userbackup";
+  				file.version = "v0.4";
+  				file.list = userdata;
+  				piccBackup(file);
+  			}
+		  }
+		  if (activePage == 2) {
+        if (page < haspages && obj.result === true) {
+          getnextpage();
+        } else if (page === haspages) {
+          initUsersTable();
+          document.getElementById("users-loading-img").style.display = "none";
+          $(".footable-show").click();
+          $(".fooicon-remove").click();
+        }
+		  }
 		}
 	}
 }
 
-
 function socketCloseListener(evt) {
-	console.log('socket closed');
 	document.getElementById("settingsFieldset").disabled = true;
 	document.getElementById("usersFieldset").disabled = true;
 	document.getElementById("logsFieldset").disabled = true;
@@ -132,10 +166,8 @@ function start() {
 	websock.addEventListener('message', socketMessageListener);
 	websock.addEventListener('error', socketErrorListener);
 	websock.addEventListener('close', socketCloseListener);
-
 	websock.onopen = function (evt) {
-		console.log('websocket on open');
-		websock.send("{\"command\":\"getconf\"}");
+		websock.send("{\"command\":\"userlist\", \"page\":" + page + "}");
 		document.getElementById("settingsFieldset").disabled = true;
 		document.getElementById("usersFieldset").disabled = true;
 		document.getElementById("logsFieldset").disabled = true;

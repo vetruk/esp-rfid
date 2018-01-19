@@ -23,14 +23,14 @@
 		<div class="header clearfix">
 			<nav>
 				<ul class="nav nav-pills pull-right">
-					<li id="navLogs" role="presentation"><a href="#" onclick="return showLogs();">Logs</a></li>
-					<li id="navUsers" role="presentation"><a href="#" onclick="return showUsers();">Users</a> </li>
-					<li id="navSettings" role="presentation" class="active"><a href="#" onclick="return showSettings();">Settings</a> </li>
+					<li id="navLogs" role="presentation" disabled><a href="#" onclick="return showLogs();">Logs</a></li>
+					<li id="navUsers" role="presentation" class="active"><a href="#" onclick="return showUsers();">Users</a> </li>
+					<li id="navSettings" role="presentation" disabled><a href="#" onclick="return showSettings();">Settings</a> </li>
 				</ul>
 			</nav>
 			<h3 class="text-muted">ESP RFID</h3>
 		</div>
-		<div id="settingsPanel">
+		<div id="settingsPanel" style="display:none">
 			<div class="jumbotron">
 				<div class="alert alert-warning"><strong>Warning!</strong> Settings will take effect when the device is rebooted.
 				</div>
@@ -470,7 +470,7 @@
 				</div>
 			</div>
 		</div>
-		<div id="usersPanel" style="display:none">
+		<div id="usersPanel">
 			<div class="jumbotron">
 				<div class="overlay">
 					<div id="users-loading-img" class="text-center">

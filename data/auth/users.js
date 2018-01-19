@@ -66,7 +66,10 @@ function initUsersTable() {
 						"title": "Valid Until",
 						"breakpoints": "xs sm",
 						"parser": function (value) {
-							var vuepoch = new Date(value * 1000);
+						  if (value == 0) {
+						    value = 2145913200;
+						  }
+						  var vuepoch = new Date(value * 1000);
 							var formatted = vuepoch.getFullYear() + '-' + twoDigits(vuepoch.getMonth() + 1) + '-' + twoDigits(vuepoch.getDate());
 							return formatted;
 						},
@@ -114,13 +117,20 @@ function initUsersTable() {
 			uid = 10001;
 		$editor.on('submit', function (e) {
 			if (this.checkValidity && !this.checkValidity()) return;
-			e.preventDefault();
+			e.preventDefault(validuntil);
+			var validuntil = $editor.find('#validuntil').val();
+			var datatosend = {};
+			datatosend.command = "userfile";
+			datatosend.uid = $editor.find('#uid').val();
+			datatosend.user = $editor.find('#username').val();
+			datatosend.acctype = $editor.find('#acctype').val();
+			datatosend.validuntil = (new Date(validuntil).getTime() / 1000) + (timezone * 60 * 60);
 			var row = $modal.data('row'),
 				values = {
-					uid: $editor.find('#uid').val(),
-					username: $editor.find('#username').val(),
+					uid: datatosend.uid,
+					username: datatosend.user,
 					acctype: acctypeparser(),
-					validuntil: $editor.find('#validuntil').val()
+					validuntil: datatosend.validuntil
 				};
 			if (row instanceof FooTable.Row) {
 				row.val(values);
@@ -128,17 +138,7 @@ function initUsersTable() {
 				values.id = uid++;
 				ft.rows.add(values);
 			}
-			var datatosend = {};
-			datatosend.command = "userfile";
-			datatosend.uid = $editor.find('#uid').val();
-			datatosend.user = $editor.find('#username').val();
-			datatosend.acctype = $editor.find('#acctype').val();
-			var validuntil = $editor.find('#validuntil').val();
-			var vuepoch = (new Date(validuntil).getTime() / 1000) + (timezone * 60 * 60);
-			datatosend.validuntil = vuepoch;
 			websock.send(JSON.stringify(datatosend));
-
-
 			$modal.modal('hide');
 		});
 	});
