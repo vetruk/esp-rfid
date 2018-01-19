@@ -63,8 +63,12 @@ function socketMessageListener(evt) {
 		document.getElementById("settings-loading-img").style.display = "none";
 		document.getElementById("settingsFieldset").disabled = false;
     document.getElementById('navSettings').disabled = false;
-    timezone = obj.timezone;
-		listCONF(obj);
+    if (obj.result == true) {
+    	timezone = obj.timezone;
+			listCONF(obj);
+    } else {
+    	timezone = 0;
+    }
 		websock.send("{\"command\":\"latestlog\"}");
 	} else if (obj.command === "gettime") {
 		utcSeconds = obj.epoch;

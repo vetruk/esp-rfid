@@ -489,8 +489,12 @@ void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventT
           if (buffer) {
             configFile.readBytes((char *)buffer->get(), len + 1);
             ws.textAll(buffer);
+          } else {
+            ws.textAll("{\"command\":\"configfile\",\"result\": false}");
           }
           configFile.close();
+        } else {
+          ws.textAll("{\"command\":\"configfile\",\"result\": false}");
         }
       }
     }
