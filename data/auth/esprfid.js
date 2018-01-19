@@ -63,11 +63,11 @@ function socketMessageListener(evt) {
 		document.getElementById("settings-loading-img").style.display = "none";
 		document.getElementById("settingsFieldset").disabled = false;
     document.getElementById('navSettings').disabled = false;
-    if (obj.result == true) {
+    if (obj.result == false) {
+    	timezone = 0;
+    } else {
     	timezone = obj.timezone;
 			listCONF(obj);
-    } else {
-    	timezone = 0;
     }
 		websock.send("{\"command\":\"latestlog\"}");
 	} else if (obj.command === "gettime") {
