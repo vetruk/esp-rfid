@@ -52,13 +52,15 @@ function initUsersTable() {
 						"title": "Access Type",
 						"breakpoints": "xs",
 						"parser": function (value) {
+						  console.log('acctype : ' + value);
 							if (value === 1) {
 								return "Active";
 							} else if (value === 99) {
 								return "Admin";
-							} else {
+							} else if (value === 0) {
 								return "Disabled";
 							}
+							return value;
 						},
           },
 					{
@@ -66,6 +68,7 @@ function initUsersTable() {
 						"title": "Valid Until",
 						"breakpoints": "xs sm",
 						"parser": function (value) {
+						  console.log('validuntil value : ' + value);
 						  if (value == 0) {
 						    value = 2145913200;
 						  }
@@ -95,6 +98,7 @@ function initUsersTable() {
 						$editor.find('#uid').val(values.uid);
 						$editor.find('#username').val(values.username);
 						$editor.find('#acctype').val(acctypefinder);
+						console.log('validuntil ' + values.validuntil);
 						$editor.find('#validuntil').val(values.validuntil);
 						$modal.data('row', row);
 						$editorTitle.text('Edit User # ' + values.username);
@@ -124,13 +128,16 @@ function initUsersTable() {
 			datatosend.uid = $editor.find('#uid').val();
 			datatosend.user = $editor.find('#username').val();
 			datatosend.acctype = $editor.find('#acctype').val();
+		  console.log('edit acctype ' + datatosend.acctype);
+			console.log('validuntil submit ' + validuntil);
+			
 			datatosend.validuntil = (new Date(validuntil).getTime() / 1000) + (timezone * 60 * 60);
 			var row = $modal.data('row'),
 				values = {
 					uid: datatosend.uid,
 					username: datatosend.user,
 					acctype: acctypeparser(),
-					validuntil: datatosend.validuntil
+					validuntil: validuntil
 				};
 			if (row instanceof FooTable.Row) {
 				row.val(values);
