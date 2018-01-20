@@ -71,10 +71,11 @@ function browserTime() {
 }
 
 function deviceTime() {
-	var t = new Date(0); // The 0 there is the key, which sets the date to the epoch
-	t.setUTCSeconds(utcSeconds);
-	document.getElementById("utc").innerHTML = t;
-	utcSeconds = utcSeconds + 1;
+  var t = new Date(0); // The 0 there is the key, which sets the date to the epoch
+  t.setUTCSeconds(utcSeconds);
+  var d = t.toUTCString();
+  document.getElementById("utc").innerHTML = d;
+  utcSeconds = utcSeconds + 1;
 }
 
 function syncBrowserTime() {
@@ -84,7 +85,7 @@ function syncBrowserTime() {
 	datatosend.command = "settime";
 	datatosend.epoch = timestamp;
 	websock.send(JSON.stringify(datatosend));
-	location.reload();
+	//location.reload();
 }
 
 function listSSID(obj) {

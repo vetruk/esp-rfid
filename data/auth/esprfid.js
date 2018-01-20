@@ -172,6 +172,10 @@ function socketCloseListener(evt) {
 }
 
 function socketErrorListener(evt) {
+	document.getElementById("settingsFieldset1").disabled = true;
+	document.getElementById("settingsFieldset2").disabled = true;
+	document.getElementById("usersFieldset").disabled = true;
+	document.getElementById("logsFieldset").disabled = true;
 	console.log('socket error');
 	console.log(evt);
 }
