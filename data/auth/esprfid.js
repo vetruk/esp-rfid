@@ -48,7 +48,8 @@ function mouseoutPass(name) {
 }
 
 function socketOpenListener(evt) {
-	document.getElementById("settingsFieldset").disabled = false;
+	document.getElementById("settingsFieldset1").disabled = false;
+	document.getElementById("settingsFieldset2").disabled = false;
 	document.getElementById("usersFieldset").disabled = false;
 	document.getElementById("logsFieldset").disabled = false;
 }
@@ -73,7 +74,8 @@ function socketMessageListener(evt) {
 		listSSID(obj);
 	} else if (obj.command === "configfile") {
 		document.getElementById("settings-loading-img").style.display = "none";
-		document.getElementById("settingsFieldset").disabled = false;
+		document.getElementById("settingsFieldset1").disabled = false;
+		document.getElementById("settingsFieldset2").disabled = false;
     document.getElementById('navSettings').disabled = false;
     if (obj.result == false) {
       timezone = 0;
@@ -158,7 +160,8 @@ function socketMessageListener(evt) {
 }
 
 function socketCloseListener(evt) {
-	document.getElementById("settingsFieldset").disabled = true;
+	document.getElementById("settingsFieldset1").disabled = true;
+	document.getElementById("settingsFieldset2").disabled = true;
 	document.getElementById("usersFieldset").disabled = true;
 	document.getElementById("logsFieldset").disabled = true;
 	websock = new WebSocket(wsUri);
@@ -185,7 +188,8 @@ function start() {
 	websock.addEventListener('close', socketCloseListener);
 	websock.onopen = function (evt) {
 		websock.send("{\"command\":\"userlist\", \"page\":" + page + "}");
-		document.getElementById("settingsFieldset").disabled = true;
+		document.getElementById("settingsFieldset1").disabled = true;
+		document.getElementById("settingsFieldset2").disabled = true;
 		document.getElementById("usersFieldset").disabled = true;
 		document.getElementById("logsFieldset").disabled = true;
 	};

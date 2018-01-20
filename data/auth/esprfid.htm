@@ -38,7 +38,7 @@
 					<img src="/load.gif">
 					<h5>Please wait while fetching data... <span id="loadpages"></span></h5>
 				</div>
-				<fieldset id="settingsFieldset">
+				<fieldset id="settingsFieldset1">
 					<div>
 						<button data-toggle="collapse" data-target="#status" id="refstat" onclick="refreshStats()" class="btn btn-link btn-sm">Show Device Status</button>
 					</div>
@@ -411,9 +411,11 @@
 					<div>
 						<button onclick="saveConf()" class="btn btn-primary btn-sm pull-right">Save & Reboot</button>
 					</div>
+				</fieldset>
 				<br>
 			</div>
 			<div class="jumbotron">
+				<fieldset id="settingsFieldset2">
 				<div class="row">
 					<div class="col-sm-6">
 						<legend>Backup</legend>
@@ -453,7 +455,6 @@
 
 							</div>
 						</div>
-
 					</div>
 					<div class="col-sm-6">
 						<legend>Update Firmware</legend>
@@ -467,8 +468,8 @@
 						<br>
 					</div>
 				</div>
+				</fieldset>
 			</div>
-			</fieldset>
 		</div>
 		<div id="usersPanel">
 			<div class="jumbotron">
@@ -561,7 +562,7 @@
 				</div>
 				<fieldset id="logsFieldset">
 				<div class="row">
-					<div class="col-sm-6">
+					<div>
 						<legend>Latest Access Log</legend>
 					  <br>
 						<div class="panel panel-default">
@@ -571,7 +572,6 @@
 						</div>
 					</div>
 					<div class="col-sm-6">
-
 					</div>
 				</div>
 				</fieldset>
