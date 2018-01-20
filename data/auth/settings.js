@@ -73,13 +73,9 @@ function browserTime() {
 function deviceTime() {
 	var t = new Date(0); // The 0 there is the key, which sets the date to the epoch
 	t.setUTCSeconds(utcSeconds);
-	var d = t.toUTCString();
-	document.getElementById("utc").innerHTML = d;
+	document.getElementById("utc").innerHTML = t;
 	utcSeconds = utcSeconds + 1;
 }
-
-var t = setInterval(browserTime, 1000);
-var tt = setInterval(deviceTime, 1000);
 
 function syncBrowserTime() {
 	var d = new Date();

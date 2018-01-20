@@ -70,7 +70,7 @@ function initUsersTable() {
 						  if (typeof value === 'string') {
 						    return value;
 						  }
-						  if (value == 0) {
+						  if (value === 0) {
 						    value = 2145913200;
 						  }
 						  var vuepoch = new Date(value * 1000);

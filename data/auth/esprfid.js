@@ -1,12 +1,11 @@
 var websock = null;
-var utcSeconds;
 var recordstorestore = 0;
 var slot = 0;
 var userdata = [];
 var completed = false;
 var activePage = 2; // 1: logs 2: users 3 :settings
 var wsUri;
-
+var updateDeviceTime = undefined;
 function showSettings() {
   activePage = 3;
 	document.getElementById('settingsPanel').style.display = 'block';
@@ -85,6 +84,10 @@ function socketMessageListener(evt) {
     }
 		websock.send("{\"command\":\"latestlog\"}");
 	} else if (obj.command === "gettime") {
+	  if (updateDeviceTime === undefined) {
+	    updateDeviceTime = setInterval(deviceTime, 1000);
+	  }
+
 		utcSeconds = obj.epoch;
 	} else if (obj.command === "userlist") {
 	  if (activePage == 3) {
@@ -118,13 +121,10 @@ function socketMessageListener(evt) {
 		if (obj.result == true) {
 		  logdata = obj.list;
   	  initLogsTable();
-		}
-		if (logRefresh == false) {
-  	  initLogsTable();
       $(".footable-show").click();
-  		websock.send("{\"command\":\"gettime\"}");
 		}
-		logRefresh = false;
+	  websock.send("{\"command\":\"gettime\"}");
+	  setInterval(browserTime, 1000);
 	} else if (obj.command === "status") {
 		listStats(obj);
 	} else if (obj.command === "result") {
