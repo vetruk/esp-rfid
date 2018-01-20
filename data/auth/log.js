@@ -1,6 +1,6 @@
 var logdata;
 var logRefresh = false;
-
+var logTable;
 function twoDigits(value) {
 	if (value < 10) {
 		return "0" + value;
@@ -10,7 +10,7 @@ function twoDigits(value) {
 
 function initLogsTable() {
 	jQuery(function ($) {
-		FooTable.init("#latestlogtable", {
+		logTable = FooTable.init("#latestlogtable", {
 			columns: [
 				{
 					"name": "timestamp",

@@ -5,6 +5,8 @@ var slot = 0;
 var userdata = [];
 var completed = false;
 var activePage = 2; // 1: logs 2: users 3 :settings
+var wsUri;
+
 function showSettings() {
   activePage = 3;
 	document.getElementById('settingsPanel').style.display = 'block';
@@ -45,9 +47,6 @@ function mouseoutPass(name) {
 	obj.type = "password";
 }
 
-
-var wsUri;
-
 function socketOpenListener(evt) {
 	document.getElementById("settingsFieldset").disabled = false;
 	document.getElementById("usersFieldset").disabled = false;
@@ -57,14 +56,27 @@ function socketOpenListener(evt) {
 function socketMessageListener(evt) {
 	var obj = JSON.parse(evt.data);
 	console.log(obj);
-	if (obj.command === "ssidlist") {
+  if (obj.command === "piccscan") {
+    if (activePage === 2) {
+      listSCAN(obj);
+    }
+    if (obj.known === 1) {
+      // update logs
+      var newLogEntry = {};
+      newLogEntry.uid = obj.uid;
+      newLogEntry.username = obj.user;
+      newLogEntry.timestamp = obj.timestamp;
+      logTable.rows.add(newLogEntry);
+    }
+    
+  } else if (obj.command === "ssidlist") {
 		listSSID(obj);
 	} else if (obj.command === "configfile") {
 		document.getElementById("settings-loading-img").style.display = "none";
 		document.getElementById("settingsFieldset").disabled = false;
     document.getElementById('navSettings').disabled = false;
     if (obj.result == false) {
-    	timezone = 0;
+      timezone = 0;
     } else {
     	timezone = obj.timezone;
 			listCONF(obj);
@@ -103,13 +115,14 @@ function socketMessageListener(evt) {
 	  document.getElementById('navLogs').disabled = false;
 		if (obj.result == true) {
 		  logdata = obj.list;
+  	  initLogsTable();
 		}
 		if (logRefresh == false) {
   	  initLogsTable();
+      $(".footable-show").click();
+  		websock.send("{\"command\":\"gettime\"}");
 		}
 		logRefresh = false;
-    $(".footable-show").click();
-		websock.send("{\"command\":\"gettime\"}");
 	} else if (obj.command === "status") {
 		listStats(obj);
 	} else if (obj.command === "result") {

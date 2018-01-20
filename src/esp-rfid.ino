@@ -314,6 +314,7 @@ void rfidloop() {
       root["acctype"] = AccType;
       // Username
       root["user"] = username;
+      root["timestamp"] = now();
       size_t len = root.measureLength();
       AsyncWebSocketMessageBuffer * buffer = ws.makeBuffer(len); //  creates a buffer (len + 1) for you.
       if (buffer) {
